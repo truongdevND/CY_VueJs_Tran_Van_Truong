@@ -7,21 +7,9 @@ export default {
   setup() {
     const products = ref(productData);
     const selectedImage = ref({});
-    const selectedColors = ref({}); 
+    const selectedColors = ref({});
     const isDivVisible = ref(false);
     const cart = ref([]);
-
-    // Deep clone the initial product quantities to maintain a separate quantity state
-    const productQuantities = ref({});
-    
-    // Initialize productQuantities from products data
-    const initializeQuantities = () => {
-      products.value.forEach(product => {
-        productQuantities.value[product.id] = {...product.quantity};
-      });
-    };
-    
-    initializeQuantities();
 
     const cartTotal = computed(() =>
       cart.value.reduce((total, item) => total + (item.price * item.quantity), 0)
@@ -30,16 +18,6 @@ export default {
     const cartItemCount = computed(() =>
       cart.value.reduce((total, item) => total + item.quantity, 0)
     );
-
-    const getAvailableQuantity = (productId, color) => {
-      return productQuantities.value[productId]?.[color] || 0;
-    };
-
-    const updateProductQuantity = (productId, color, change) => {
-      if (productQuantities.value[productId]) {
-        productQuantities.value[productId][color] += change;
-      }
-    };
 
     const changeColor = (productId, color) => {
       selectedImage.value[productId] = products.value.find(
@@ -53,12 +31,12 @@ export default {
     };
 
     const isColorAvailable = (product, color) => {
-      return getAvailableQuantity(product.id, color) > 0;
+      return product.quantity[color] >=0;
     };
 
     const canAddToCart = (product) => {
       const selectedColor = selectedColors.value[product.id];
-      return selectedColor && getAvailableQuantity(product.id, selectedColor) > 0;
+      return selectedColor && product.quantity[selectedColor] > 0;
     };
 
     const formatDate = (dateString) => {
@@ -74,7 +52,7 @@ export default {
       isDivVisible.value = !isDivVisible.value;
     };
 
-    const addTocart = (product) => {
+    const addToCart = (product) => {
       const selectedColor = selectedColors.value[product.id];
       if (!selectedColor || !canAddToCart(product)) {
         return;
@@ -82,12 +60,52 @@ export default {
 
       const cartKey = `${product.id}-${selectedColor}`;
       const existingProduct = cart.value.find(item => item.cartKey === cartKey);
-      const availableQuantity = getAvailableQuantity(product.id, selectedColor);
+
+      // Check the available quantity for the selected color
+      if (product.quantity[selectedColor] <= 0) {
+        alert('Sản phẩm này không còn hàng!');
+        return;
+      }
 
       if (existingProduct) {
-        if (existingProduct.quantity < availableQuantity) {
+        // If the product is already in the cart, increase the quantity
+        if (existingProduct.quantity < product.quantity[selectedColor]) {
           existingProduct.quantity += 1;
-          updateProductQuantity(product.id, selectedColor, -1);
+          // Decrement the available quantity for the selected color
+          product.quantity[selectedColor] -= 1;
+        } else {
+          alert('Đã đạt số lượng tối đa cho sản phẩm này!');
+        }
+      } else {
+        // Add the new product to the cart
+        cart.value.push({
+          ...product,
+          cartKey,
+          selectedColor,
+          quantity: 1,
+          image: product.classObject[selectedColor] || product.image
+        });
+        // Decrement the available quantity for the selected color
+        product.quantity[selectedColor] -= 1;
+      }
+    };
+    const addTocart = (product) => {
+      const selectedColor = selectedColors.value[product.id];
+      if (!selectedColor || !canAddToCart(product)) {
+        return;
+      }
+      const cartKey = `${product.id}-${selectedColor}`;
+      const existingProduct = cart.value.find(item => item.cartKey === cartKey);
+
+      if (product.quantity[selectedColor] < 0) {
+        alert('Sản phẩm này không còn hàng!');
+        return;
+      }
+
+      if (existingProduct) {
+        if (existingProduct.quantity < product.quantity[selectedColor]) {
+          existingProduct.quantity += 1;
+          product.quantity[selectedColor] -= 1;
         } else {
           alert('Đã đạt số lượng tối đa cho sản phẩm này!');
         }
@@ -99,41 +117,28 @@ export default {
           quantity: 1,
           image: product.classObject[selectedColor] || product.image
         });
-        updateProductQuantity(product.id, selectedColor, -1);
+        product.quantity[selectedColor] -= 1;
       }
     };
 
+
     const removeFromCart = (cartKey) => {
-      const cartItem = cart.value.find(item => item.cartKey === cartKey);
-      if (cartItem) {
-        // Return the quantity back to product stock
-        updateProductQuantity(
-          cartItem.id,
-          cartItem.selectedColor,
-          cartItem.quantity
-        );
-        // Remove from cart
-        const index = cart.value.findIndex(item => item.cartKey === cartKey);
-        if (index !== -1) {
-          cart.value.splice(index, 1);
-        }
+      const index = cart.value.findIndex(item => item.cartKey === cartKey);
+      if (index !== -1) {
+        cart.value.splice(index, 1);
       }
     };
 
     const updateQuantity = (cartItem, change) => {
-      const newQuantity = cartItem.quantity + change;
-      const maxAvailable = getAvailableQuantity(cartItem.id, cartItem.selectedColor) + cartItem.quantity;
-
-      if (change > 0 && newQuantity <= maxAvailable) {
-        cartItem.quantity = newQuantity;
-        updateProductQuantity(cartItem.id, cartItem.selectedColor, -1);
-      } else if (change < 0 && newQuantity > 0) {
-        cartItem.quantity = newQuantity;
-        updateProductQuantity(cartItem.id, cartItem.selectedColor, 1);
-      }
-
-      if (newQuantity <= 0) {
-        removeFromCart(cartItem.cartKey);
+      const product = products.value.find(p => p.id === cartItem.id);
+      if (product) {
+        const newQuantity = cartItem.quantity + change;
+        if (newQuantity > 0 && newQuantity <= product.quantity[cartItem.selectedColor]) {
+          cartItem.quantity = newQuantity;
+        }
+        if (newQuantity <= 0) {
+          removeFromCart(cartItem.cartKey);
+        }
       }
     };
 
@@ -143,7 +148,6 @@ export default {
       isDivVisible,
       selectedImage,
       selectedColors,
-      productQuantities,
       resetImage,
       cartTotal,
       cartItemCount,
@@ -155,8 +159,7 @@ export default {
       removeFromCart,
       updateQuantity,
       isColorAvailable,
-      canAddToCart,
-      getAvailableQuantity
+      canAddToCart
     };
   },
 };
@@ -197,7 +200,7 @@ export default {
                 <div>
                   <p class="font-medium">{{ item.productName }}</p>
                   <p class="text-sm text-gray-600">
-                    {{ formatMoney(item.price) }} - 
+                    {{ formatMoney(item.price) }} -
                     <span class="capitalize">{{ item.selectedColor }}</span>
                   </p>
                 </div>
@@ -255,7 +258,7 @@ export default {
               {{ formatMoney(item.price) }}
             </span>
             <span class="text-sm text-gray-600">
-              Còn lại: {{ selectedColors[item.id] ? getAvailableQuantity(item.id, selectedColors[item.id]) : 0 }} chiếc
+              Còn lại: {{ selectedColors[item.id] ? item.quantity[selectedColors[item.id]] : 0 }} chiếc
             </span>
           </div>
           <p class="text-sm text-gray-600">Đã bán: {{ item.sold }} chiếc</p>
@@ -265,25 +268,10 @@ export default {
             <p class="mb-2">Màu sắc:</p>
             <div class="flex gap-[10px]">
               <div v-for="color in item.colorOption" :key="color"
-                   class="relative w-[40px] h-[40px] rounded-full cursor-pointer transition-opacity"
-                   :class="{
-                     'opacity-50 cursor-not-allowed': !isColorAvailable(item, color),
-                     'border-2 border-blue-500': selectedColors[item.id] === color
-                   }"
+                   class="relative border-black border-[1px] w-[40px] h-[40px] rounded-full cursor-pointer transition-opacity"
                    @click="isColorAvailable(item, color) && changeColor(item.id, color)"
-                   @mouseover="changeColor(item.id, color)"
-                   @mouseleave="resetImage(item.id)"
                    :style="{ backgroundColor: color }">
-                <div v-if="!isColorAvailable(item, color)"
-                     class="absolute inset-0 flex items-center justify-center">
-                  <span class="material-icons text-red-500">block</span>
-                </div>
               </div>
-            </div>
-            <div class="text-sm text-gray-600 mt-2">
-              <p v-for="color in item.colorOption" :key="color" class="capitalize">
-                {{ color }}: {{ getAvailableQuantity(item.id, color) }} chiếc
-              </p>
             </div>
           </div>
           <div class="mt-4">
