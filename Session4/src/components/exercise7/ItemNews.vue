@@ -1,21 +1,33 @@
-
 <script>
 export default {
-  setup() {
+  name: 'itemNews',
+  props: {
+    image: {
+      type: String,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+  methods: {
+    emitNews() {
+      this.$emit('item-clicked', { title: this.title, image: this.image });
 
-
-    return {}
-  }
-}
+    },
+  },
+};
 </script>
 
 <template>
-  <ul class="flex-col flex gap-2.5 shadow-2xl w-[300px] h-auto">
-    <li></li>
-  </ul>
+  <div @click="emitNews">
+    <img
+      class="object-cover shadow-2xl w-full h-[200px] rounded-[10px] mb-[10px]"
+      :src="image"
+    />
+    <p class="text-2xl ">{{ title }}</p>
+  </div>
 </template>
 
 
-<style lang="scss" scoped>
-
-</style>

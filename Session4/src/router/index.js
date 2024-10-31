@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import newsDetails from '../components/exercise7/NewsDetails.vue';
 import exercise1 from '@/views/exercise1/index.vue'
 import exercise2 from '@/views/exercise2/index.vue'
 import exercise3 from '@/views/exercise3/index.vue'
@@ -50,6 +51,12 @@ const router = createRouter({
       path: '/7',
       name: 'exercise7',
       component: exercise7
+    },
+    {
+      path: '/news/detail',
+      name: 'NewsDetail',
+      component: newsDetails,
+      props: true,
     },
 
   ]

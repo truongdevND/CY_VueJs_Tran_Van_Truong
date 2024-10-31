@@ -47,7 +47,7 @@ export default {
 
 <template>
 
-  <div class="w-[500px] h-auto p-[50px] mx-auto rounded-[20px] flex flex-col gap-[50px] justify-center items-center border-[1px] border-black mt-[50px]">
+  <div class="relative w-[500px] h-auto p-[50px] mx-auto rounded-[20px] flex flex-col gap-[50px] justify-center items-center border-[1px] border-black mt-[50px]">
     <h1 class="w-full text-center text-2xl font-bold  ">ĐĂNG KÍ</h1>
     <form  @submit.prevent="handleSubmit" class="flex flex-col gap-[30px] w-[90%] ">
       <label class="flex  gap-2.5  justify-between">
@@ -57,7 +57,7 @@ export default {
       <label class="relative flex  gap-2.5 justify-between">
         <p class="text-[18px] font-bold">Email:</p>
         <input v-model="textEmail" class="border-black border-[1px]  h-[30px]" type="text">
-        <p v-if="!checkEmail" class="absolute bottom-[-24px] right-[110px] text-red-700">asdasdasd</p>
+        <p v-if="!checkEmail" class="absolute bottom-[-24px] right-[36px] text-red-700">Email Không hợp lệ!!!</p>
       </label>
       <label class="flex  gap-2.5 justify-between">
         <p class="text-[18px] font-bold">Password:</p>
@@ -68,7 +68,7 @@ export default {
               :class="[checkValueText ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'] + ' text-white font-semibold py-2 rounded-md transition duration-200'"
       >SUBMIT</button>
     </form>
-    <p v-if="errorText" class="text-red-700 ">{{errorText}}</p>
+    <p v-if="errorText" class="absolute bottom-[15px] right-[40%] text-[16px] text-red-700 ">{{errorText}}</p>
 
   </div>
 
