@@ -99,6 +99,7 @@ export default {
 
       if (product.quantity[selectedColor] < 0) {
         alert('Sản phẩm này không còn hàng!');
+        console.log()
         return;
       }
 
