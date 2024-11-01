@@ -39,7 +39,7 @@ export default {
       repassword,
       formCompleteMessage,
       isButtonDisabled,
-      handleSubmit,
+      cd  handleSubmit,
       isEmailValid,
     };
   },

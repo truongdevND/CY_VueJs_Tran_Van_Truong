@@ -1,4 +1,4 @@
-export const productData = [
+`export const productData = [
   {
     id: 1,
     image: '../../public/image/shirt/ao.webp',
@@ -73,3 +73,4 @@ export const productData = [
 
 ]
 
+`

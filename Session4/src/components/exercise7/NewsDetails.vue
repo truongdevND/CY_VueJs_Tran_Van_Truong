@@ -16,7 +16,7 @@ export default {
 </script>
 
 <template>
- <div class="w-full h-auto flex flex-col px-[100px] justify-center items-center text-center ">
+ <div class="max-w-[1600px] mx-auto h-auto flex flex-col px-[100px] justify-center items-center text-center ">
 
      <h1 class=" my-[50px] text-5xl font-bold ">{{ newsDetail.title }}</h1>
      <img class="w-[600px] h-auto object-cover" :src="newsDetail.image_url" :alt="newsDetail.title">

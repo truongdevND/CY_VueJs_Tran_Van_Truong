@@ -33,7 +33,7 @@ export default {
 <template>
   <div class="flex justify-center items-center  mt-[100px] ">
     <div class="flex flex-col gap-4" v-for="(item, index) in items" :key="index">
-      <Item :title="item.title" :description="item.description" :isCheck="item.isCheck" :price="item.price"  @product-selected="handleProductSelection(item.productCode)" />
+      <Item :title="item.title" :description="item.description" :isCheck="item.isCheck" :price="item.price"  @item-selected="handleProductSelection(item.productCode)" />
       <CheckItem :title="item.title" :isCheck="item.isCheck" :price="item.price" :description="item.description"  />
     </div>
   </div>

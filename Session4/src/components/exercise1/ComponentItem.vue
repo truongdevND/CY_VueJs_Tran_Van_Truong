@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     emitProductCode() {
-      this.$emit("item-selected");
+      this.$emit("item-selected",this.productCode);
 
     },
   },
