@@ -11,6 +11,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@vuepic/vue-datepicker": "^9.0.3",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
     "pinia": "^2.2.4",
@@ -18,7 +19,9 @@
     "tailwindcss": "^3.4.14",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5",
-    "vue-tailwind": "^2.5.1"
+    "vue-tailwind": "^2.5.1",
+    "vue3-date-time-picker": "^2.8.3",
+    "vue3-datepicker": "^0.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

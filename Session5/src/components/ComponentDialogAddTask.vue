@@ -1,58 +1,173 @@
+<script setup>
+import ComponentButtonAddTask from '@/components/Button/ComponentAddTask.vue';
+import ComponentInput from "@/components/ComponentInput.vue";
+import ComponentTextarena from "@/components/ComponentTextarena.vue";
+import ComponentDatePicker from "@/components/ComponentDatePicker.vue";
+import { ref, watch } from "vue";
+
+const emit = defineEmits(['add-task']);
+
+const isAddTask = ref(false);
+const taskName = ref('');
+const taskContent = ref('');
+const deadline = ref(null);
+const errorMessage = ref('');
+
+const validateForm = () => {
+  const errors = [];
+
+  if (!taskName.value?.trim()) {
+    errors.push('Task name is required');
+  }
+
+  if (!taskContent.value?.trim()) {
+    errors.push('Task content is required');
+  }
+
+  if (deadline.value && new Date(deadline.value) < new Date()) {
+    errors.push('Deadline cannot be in the past');
+  }
+
+  errorMessage.value = errors.join(', ');
+  return errors.length === 0;
+};
+
+watch([taskName, taskContent], () => {
+  errorMessage.value = '';
+});
+
+const openAddTask = () => {
+  isAddTask.value = true;
+};
+
+const closeModal = () => {
+  isAddTask.value = false;
+  resetForm();
+};
+
+const resetForm = () => {
+  taskName.value = '';
+  taskContent.value = '';
+  deadline.value = null;
+  errorMessage.value = '';
+};
+
+const submitForm = () => {
+  if (!validateForm()) {
+    return;
+  }
+
+  emit("add-task", {
+    id: Date.now(),
+    name: taskName.value.trim(),
+    content: taskContent.value.trim(),
+    deadline: deadline.value,
+  });
+
+  closeModal();
+};
+
+
+</script>
+
 <template>
-  <ComponentButtonAddTask @click="openAddTask" />
+  <div>
+    <ComponentButtonAddTask @click="openAddTask" />
 
-  <div v-if="isAddTask" class="fixed inset-0 bg-black bg-opacity-50 z-40" @click="closeModal">
-    <div class="relative p-4 w-full max-w-md max-h-full mx-auto">
-      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Create New Product
-          </h3>
-          <button type="button" @click="closeModal" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
-            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-            </svg>
-            <span class="sr-only">Close modal</span>
-          </button>
+    <Transition name="fade">
+      <div v-if="isAddTask"
+           class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+           @click="closeModal">
+
+        <div class="relative p-4 w-full max-w-md mx-auto mt-20"
+             @click.stop>
+          <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl">
+
+            <div class="flex items-center justify-between p-4 border-b dark:border-gray-700">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                Create New Task
+              </h3>
+              <button
+                type="button"
+                @click="closeModal"
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white rounded-lg p-1.5 inline-flex items-center"
+                aria-label="Close modal"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <form @submit.prevent="submitForm" class="p-6 space-y-6" >
+              <div class="space-y-4">
+                <div>
+                  <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Task Name
+                    <span class="text-red-500">*</span>
+                  </label>
+                  <ComponentInput
+                    v-model="taskName"
+                    placeholder="Enter task name"
+                    :error="!taskName && errorMessage"
+                  />
+                </div>
+
+                <div>
+                  <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Task Content
+                    <span class="text-red-500">*</span>
+                  </label>
+                  <ComponentTextarena
+                    v-model="taskContent"
+                    placeholder="Enter task details"
+                    :error="!taskContent && errorMessage"
+                  />
+                </div>
+
+                <div>
+                  <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Deadline
+                  </label>
+                  <ComponentDatePicker
+                    v-model="deadline"
+                    :min="new Date().toISOString().split('T')[0]"
+                  />
+                </div>
+              </div>
+
+              <div v-if="errorMessage"
+                   class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-red-900/50 dark:text-red-400"
+                   role="alert">
+                {{ errorMessage }}
+              </div>
+
+              <div class="flex justify-end">
+                <button
+                  type="submit"
+                  class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800 transition-colors"
+                >
+                  Create Task
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-        <form class="p-4 md:p-5">
-         <label>
-           <span>Task Name:</span>
-
-         </label>
-          <button type="submit" class="...">Add new product</button>
-        </form>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
 
-<script>
-import ComponentButtonAddTask from '@/components/Button/ComponentAddTask.vue'
-import { ref } from "vue";
+<style scoped>
 
-export default {
-  name: "DialogAddTask",
-  components: {
-    ComponentButtonAddTask
-  },
-  setup() {
-    const isAddTask = ref(false);
-
-    const openAddTask = () => {
-      isAddTask.value = true;
-    }
-
-    const closeModal = () => {
-      isAddTask.value = false;
-    }
-
-    return {
-      openAddTask,
-      closeModal,
-      isAddTask
-    }
-  }
-}
-</script>
-
+</style>

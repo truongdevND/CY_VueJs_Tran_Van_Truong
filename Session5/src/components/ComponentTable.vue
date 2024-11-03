@@ -4,7 +4,7 @@ import ComponentButtonDelete from "@/components/Button/ComponentButtonDelete.vue
 import ComponentButtonEdit from "@/components/Button/ComponentButtonEdit.vue";
 
 
-import {ref, computed} from "vue";
+import {ref, computed,watch } from "vue";
 
 export default {
   name: "ComponentTable",
@@ -26,27 +26,50 @@ export default {
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
 
+
+
+
+
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
-      return datas.value.slice(start, end);
+      return props.data.slice(start, end);
     });
+
 
     const totalPages = computed(() => {
       return Math.ceil(datas.value.length / itemsPerPage.value);
     });
 
+    watch(() => props.data, () => {
+      if (currentPage.value > 1 && paginatedData.value.length === 0) {
+        currentPage.value--;
+      }
+      if (props.data.length > 0 && currentPage.value === totalPages.value) {
+        currentPage.value = totalPages.value;
+      }
+    });
+
     const goToPage = (page) => {
       currentPage.value = page;
-    };
 
+    };
+    const formatDate = (dateString) => {
+      return new Date(dateString).toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    };
     return {
-      datas,
       currentPage,
       itemsPerPage,
       paginatedData,
       totalPages,
-      goToPage
+      goToPage,
+      formatDate
     };
   }
 };
@@ -62,6 +85,7 @@ export default {
         </th>
         <th scope="col" class="px-6 py-3">STT</th>
         <th scope="col" class="px-6 py-3">Task Name</th>
+        <th scope="col" class="px-6 py-3">Task Content</th>
         <th scope="col" class="px-6 py-3">Status</th>
         <th scope="col" class="px-6 py-3">Date</th>
         <th scope="col" class="px-6 py-3">Action</th>
@@ -79,12 +103,14 @@ export default {
           <ComponenCheckbox />
         </td>
         <td class="w-4 p-6">{{ item.id }}</td>
-        <td class="w-4 p-6 ">{{ item.todo }}</td>
+        <td class="w-4 p-6 ">{{ item.name }}</td>
+        <td class="w-4 p-6 ">{{ item.content }}</td>
+
         <td class="w-4 p-6"
         >
            <span  :class="item.completed ? 'inline-flex items-center bg-green-100 text-green-800  font-medium px-3 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300' : 'inline-flex items-center bg-red-100 text-red-800 font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300'">  {{ item.completed ? 'Xong' : 'Chưa xong' }}</span>
          </td>
-        <td class="w-4 p-6">{{ item.date }}</td>
+        <td class="w-4 p-6">{{formatDate(item.deadline) }}</td>
         <td class="w-4 p-6">
           <ComponentButtonEdit/>
           <ComponentButtonDelete/>
