@@ -4,6 +4,7 @@ import ComponentButtonDelete from "@/components/Button/ComponentButtonDelete.vue
 import ComponentButtonEdit from "@/components/Button/ComponentButtonEdit.vue";
 
 
+
 import {ref, computed,watch } from "vue";
 
 export default {
@@ -20,13 +21,14 @@ export default {
     }
 
   },
-  setup(props) {
+  setup(props,{emit}) {
 
     const datas = ref(props.data);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
 
-
+    const selectedItems = ref(new Set());
+    const isAllSelected = ref(false);
 
 
 
@@ -41,19 +43,52 @@ export default {
       return Math.ceil(datas.value.length / itemsPerPage.value);
     });
 
-    watch(() => props.data, () => {
-      if (currentPage.value > 1 && paginatedData.value.length === 0) {
-        currentPage.value--;
-      }
-      if (props.data.length > 0 && currentPage.value === totalPages.value) {
-        currentPage.value = totalPages.value;
-      }
-    });
+
+    watch(
+      () => props.data,
+      (newData) => {
+        datas.value = newData;
+        if (currentPage.value > 1 && paginatedData.value.length === 0) {
+          currentPage.value--;
+        }
+        if (newData.length > 0 && currentPage.value === totalPages.value) {
+          currentPage.value = totalPages.value;
+        }
+      },
+      { immediate: true }
+    );
 
     const goToPage = (page) => {
       currentPage.value = page;
 
     };
+
+    const toggleSelectAll = (checked) => {
+      isAllSelected.value = checked;
+      if (checked) {
+        paginatedData.value.forEach(item => {
+          selectedItems.value.add(item.id);
+        });
+      } else {
+        paginatedData.value.forEach(item => {
+          selectedItems.value.delete(item.id);
+        });
+      }
+    };
+
+    const toggleSelectItem = (itemId, checked) => {
+      if (checked) {
+        selectedItems.value.add(itemId);
+      } else {
+        selectedItems.value.delete(itemId);
+        isAllSelected.value = false;
+      }
+
+      isAllSelected.value = paginatedData.value.every(item => selectedItems.value.has(item.id));
+    };
+
+
+
     const formatDate = (dateString) => {
       return new Date(dateString).toLocaleDateString('vi-VN', {
         year: 'numeric',
@@ -63,13 +98,26 @@ export default {
         minute: '2-digit'
       });
     };
+    const handleEdit = (item) => {
+      emit('edit-task', item);
+    };
+    const handleDelete = (itemId) => {
+      emit('delete-task', itemId);
+    };
+
     return {
       currentPage,
       itemsPerPage,
       paginatedData,
       totalPages,
       goToPage,
-      formatDate
+      formatDate,
+      toggleSelectItem,
+      toggleSelectAll,
+      selectedItems,
+      isAllSelected,
+      handleEdit,
+      handleDelete
     };
   }
 };
@@ -81,7 +129,10 @@ export default {
       <thead class="text-[16px] text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
       <tr>
         <th scope="col" class="px-6 py-3">
-          <ComponenCheckbox/>
+          <ComponenCheckbox
+            :checked="isAllSelected"
+            @change="toggleSelectAll"
+         />
         </th>
         <th scope="col" class="px-6 py-3">STT</th>
         <th scope="col" class="px-6 py-3">Task Name</th>
@@ -100,7 +151,9 @@ export default {
         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
       >
         <td class="w-4 p-6">
-          <ComponenCheckbox />
+          <ComponenCheckbox
+            :checked="selectedItems.has(item.id)"
+            @change="(checked) => toggleSelectItem(item.id, checked)"/>
         </td>
         <td class="w-4 p-6">{{ item.id }}</td>
         <td class="w-4 p-6 ">{{ item.name }}</td>
@@ -112,8 +165,8 @@ export default {
          </td>
         <td class="w-4 p-6">{{formatDate(item.deadline) }}</td>
         <td class="w-4 p-6">
-          <ComponentButtonEdit/>
-          <ComponentButtonDelete/>
+          <ComponentButtonEdit @click="handleEdit(item)"/>
+          <ComponentButtonDelete  @click="handleDelete(item.id)"/>
         </td>
       </tr>
       </tbody>
