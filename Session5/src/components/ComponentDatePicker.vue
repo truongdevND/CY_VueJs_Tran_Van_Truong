@@ -1,4 +1,4 @@
-<template>
+ <template>
     <VueDatePicker v-model="date"  placeholder="Select date"/>
 </template>
 

@@ -3,9 +3,9 @@
 </script>
 
 <template>
-
+  $END$
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 
 </style>

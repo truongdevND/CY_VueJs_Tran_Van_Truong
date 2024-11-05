@@ -1,10 +1,8 @@
 <script>
 import ComponenCheckbox from "@/components/ComponenCheckbox.vue";
 import ComponentButtonDelete from "@/components/Button/ComponentButtonDelete.vue";
-import ComponentButtonEdit from "@/components/Button/ComponentButtonEdit.vue";
-
-
-
+import ComponentButton from "@/components/Button/ComponentButton.vue";
+import TableShowTask from "@/components/Table/ComponentShowTask.vue";
 import {ref, computed,watch } from "vue";
 
 export default {
@@ -12,20 +10,21 @@ export default {
   components: {
     ComponenCheckbox,
     ComponentButtonDelete,
-    ComponentButtonEdit
+    ComponentButton,
+    TableShowTask
   },
   props: {
     data: {
       type: Array,
       required: true
     }
-
   },
   setup(props,{emit}) {
 
     const datas = ref(props.data);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
+    const filteredItems = ref([]);
 
     const selectedItems = ref(new Set());
     const isAllSelected = ref(false);
@@ -60,9 +59,15 @@ export default {
 
     const goToPage = (page) => {
       currentPage.value = page;
+      isAllSelected.value = false;
+      selectedItems.value.clear();
+      filteredItems.value = [];
+
 
     };
-
+    const toggleStatus = (item) => {
+      emit('toggle-status', item.id);
+    };
     const toggleSelectAll = (checked) => {
       isAllSelected.value = checked;
       if (checked) {
@@ -74,6 +79,7 @@ export default {
           selectedItems.value.delete(item.id);
         });
       }
+      //showSelectedItems()
     };
 
     const toggleSelectItem = (itemId, checked) => {
@@ -85,8 +91,15 @@ export default {
       }
 
       isAllSelected.value = paginatedData.value.every(item => selectedItems.value.has(item.id));
+      //showSelectedItems();
     };
 
+    const showSelectedItems = () => {
+      filteredItems.value = props.data.filter(item =>
+        selectedItems.value.has(item.id)
+      );
+
+    };
 
 
     const formatDate = (dateString) => {
@@ -117,7 +130,11 @@ export default {
       selectedItems,
       isAllSelected,
       handleEdit,
-      handleDelete
+      handleDelete,
+      filteredItems,
+      showSelectedItems,
+      toggleStatus
+
     };
   }
 };
@@ -125,6 +142,7 @@ export default {
 
 <template>
   <div>
+    <ComponentButton text-btn="Export Task" @click="showSelectedItems" />
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
       <thead class="text-[16px] text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
       <tr>
@@ -159,13 +177,13 @@ export default {
         <td class="w-4 p-6 ">{{ item.name }}</td>
         <td class="w-4 p-6 ">{{ item.content }}</td>
 
-        <td class="w-4 p-6"
+        <td class="w-4 p-6 cursor-pointer"  @click="toggleStatus(item)"
         >
            <span  :class="item.completed ? 'inline-flex items-center bg-green-100 text-green-800  font-medium px-3 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300' : 'inline-flex items-center bg-red-100 text-red-800 font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300'">  {{ item.completed ? 'Xong' : 'Chưa xong' }}</span>
          </td>
         <td class="w-4 p-6">{{formatDate(item.deadline) }}</td>
         <td class="w-4 p-6">
-          <ComponentButtonEdit @click="handleEdit(item)"/>
+          <ComponentButton  :text-btn="'Edit'" @click="handleEdit(item)" />
           <ComponentButtonDelete  @click="handleDelete(item.id)"/>
         </td>
       </tr>
@@ -182,8 +200,9 @@ export default {
         {{ page }}
       </button>
     </div>
+    <TableShowTask v-if="filteredItems.length > 0" :filtered-items ="filteredItems" />
+
   </div>
 </template>
-
 <style scoped>
 </style>

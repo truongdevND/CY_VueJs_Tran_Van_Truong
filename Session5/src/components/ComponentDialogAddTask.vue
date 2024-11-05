@@ -1,5 +1,5 @@
 <script setup>
-import ComponentButtonAddTask from '@/components/Button/ComponentAddTask.vue';
+import ComponentButton from '@/components/Button/ComponentButton.vue';
 import ComponentInput from "@/components/ComponentInput.vue";
 import ComponentTextarena from "@/components/ComponentTextarena.vue";
 import ComponentDatePicker from "@/components/ComponentDatePicker.vue";
@@ -94,7 +94,7 @@ const submitForm = () => {
 
 <template>
   <div>
-    <ComponentButtonAddTask v-if="!props.task" @click="openDialog"/>
+    <ComponentButton :text-btn="'Add Task'" v-if="!props.task" @click="openDialog"/>
 
     <Transition name="fade">
       <div v-if="isDialogOpen"
