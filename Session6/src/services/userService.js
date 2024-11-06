@@ -1,14 +1,14 @@
 import { get, del, post } from './service.js'
 
-function getUsers() {
-  return get('users')
+function login(payload) {
+  return post('/login', payload)
 }
 
-function addUser(data) {
-  return post('users', data)
+function getLoggedUser() {
+  return get('/user')
 }
 
 export const userService = {
-  getUsers,
-  addUser,
+  login,
+  getLoggedUser,
 }

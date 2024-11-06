@@ -36,7 +36,8 @@ export default {
       const end = start + itemsPerPage.value;
       return props.data.slice(start, end);
     });
-
+    console.log(paginatedData);
+    console.log(datas.value);
 
     const totalPages = computed(() => {
       return Math.ceil(datas.value.length / itemsPerPage.value);

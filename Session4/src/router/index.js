@@ -8,6 +8,9 @@ import exercise5 from '@/views/exercise5/index.vue'
 import exercise6 from '@/views/exercise6/index.vue'
 import exercise7 from '@/views/exercise7/index.vue'
 import exercise8 from '@/views/exercise8/index.vue'
+import exercise10 from '@/views/exercise10/index.vue'
+import exercise11 from '@/views/exercise11/index.vue'
+
 
 
 
@@ -58,6 +61,16 @@ const router = createRouter({
       path: '/8',
       name: 'exercise8',
       component: exercise8
+    },
+    {
+      path: '/10',
+      name: 'exercise10',
+      component: exercise10
+    },
+    {
+      path: '/11',
+      name: 'exercise11',
+      component: exercise11
     },
     {
       path: '/news/detail',

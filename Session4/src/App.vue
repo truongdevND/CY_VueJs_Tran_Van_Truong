@@ -14,6 +14,8 @@ import { RouterLink, RouterView } from 'vue-router'
     <RouterLink class="bg-pink-500 w-[100px] h-full rounded-[10px]  flex text-2xl justify-center items-center text-center " to="/6">Bài 6</RouterLink>
     <RouterLink class="bg-fuchsia-700 w-[100px] h-full rounded-[10px]  flex text-2xl justify-center items-center text-center " to="/7">Bài 7</RouterLink>
     <RouterLink class="bg-yellow-700 w-[100px] h-full rounded-[10px]  flex text-2xl justify-center items-center text-center " to="/8">Bài 8</RouterLink>
+    <RouterLink class="bg-red-400 w-[100px] h-full rounded-[10px]  flex text-2xl justify-center items-center text-center " to="/10">Bài 10</RouterLink>
+    <RouterLink class="bg-lime-600 w-[100px] h-full rounded-[10px]  flex text-2xl justify-center items-center text-center " to="/11">Bài 11</RouterLink>
 
 
 
