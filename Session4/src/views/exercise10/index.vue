@@ -58,7 +58,7 @@ export default {
 <template>
   <div
     class=" overflow-hidden  bg-cover  text-center"
-    style="background-image: url('https://aphoto.vn/wp-content/uploads/2016/07/cach-chup-hinh-dep-bang-dien-thoai.jpg'); height: 100vh">
+    style="background-image: url('./image/img2.jpg'); height: 100vh">
     <div
       class=" h-full w-full overflow-hidden  "
       style="background-color: rgba(0, 0, 0, 0.6)">
