@@ -23,7 +23,7 @@ export default {
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
-      if (filteredData.value){
+      if (filteredData.value) {
         return filteredData.value.slice(start, end);
       }
     });
@@ -84,7 +84,7 @@ export default {
           </div>
           <input v-model="textSearch" type="search" id="default-search"
                  class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                 placeholder="Enter city name" required/>
+                 placeholder="Enter last name ...." required/>
           <button type="submit"
                   class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Search
@@ -92,13 +92,14 @@ export default {
         </div>
       </form>
       <ul class="w-full rounded-[20px] mt-[20px]  bg-gray-300 p-[20px] flex flex-col gap-[10px]">
-        <li v-for="item in paginatedData" :key="item.id" class="flex  gap-2.5 items-center rounded-[10px] bg-white h-[80px] p-[20px] ">
+        <li v-for="item in paginatedData" :key="item.id"
+            class="flex  gap-2.5 items-center rounded-[10px] bg-white h-[80px] p-[20px] ">
           <div>
             <img class="w-[60px] h-[60px] object-cover" :src="item.image" alt="">
           </div>
           <div>
-            <p class="font-bold text-[22px]">  {{item.firstName}} {{item.lastName}} {{item.maidenName}}</p>
-            <p class="tex-[18px]">Age:{{item.age}}</p>
+            <p class="font-bold text-[22px]"> {{ item.firstName }} {{ item.lastName }} {{ item.maidenName }}</p>
+            <p class="tex-[18px]">Age:{{ item.age }}</p>
           </div>
 
         </li>
@@ -109,7 +110,7 @@ export default {
           :key="page"
           @click="goToPage(page)"
           :class="['px-3 py-1 mx-1 rounded', page === currentPage? 'bg-blue-500 text-white':'bg-gray-500 text-white']">
-          {{page}}
+          {{ page }}
         </button>
       </div>
     </div>
