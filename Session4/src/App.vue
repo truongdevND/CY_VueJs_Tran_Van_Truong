@@ -45,7 +45,7 @@ const handlerOpenMenu = () => {
         class=" py-[30px] z-9999  left-0 top-0 w-[300px] h-screen bg-gray-500"
       >
         <div class="px-[20px] text-3xl font-bold uppercase flex justify-between">
-          <p>bài tập VueJs</p>
+          <RouterLink to="/">bài tập VueJs</RouterLink>
           <svg @click="handlerOpenMenu" class="text-white" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20"
                height="20" viewBox="0 0 64 64">
             <path

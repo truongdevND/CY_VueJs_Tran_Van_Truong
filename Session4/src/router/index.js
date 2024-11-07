@@ -14,6 +14,7 @@ import exercise12 from '@/views/exercise12/index.vue'
 import exercise13 from '@/views/exercise13/index.vue'
 import exercise14 from '@/views/exercise14/index.vue'
 import exercise15 from '@/views/exercise15/index.vue'
+import home from "@/views/home.vue";
 
 
 
@@ -30,6 +31,11 @@ import exercise15 from '@/views/exercise15/index.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: home
+    },
     {
       path: '/1',
       name: 'exercise1',
