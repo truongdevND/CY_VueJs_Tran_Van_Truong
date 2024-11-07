@@ -1,5 +1,5 @@
 <script>
-import {ref, watch} from "vue";
+import {ref} from "vue";
 import {weatherService} from "@/views/exercise10/service/weaherService.js";
 
 export default {
@@ -23,21 +23,20 @@ export default {
     const handleSearch = async () => {
       if (textSearchCity.value.trim()) {
         await fetchData(textSearchCity.value)
-      } else {
       }
     }
 
     const getWeatherIcon = (weatherCode) => {
       const iconMap = {
-        '01d': './image/sun.png',
-        '02d': './image/cloudy.png',
-        '03d': './image/cloudy.png',
-        '04d': './image/cloudy.png',
-        '09d': './image/rain.png',
-        '10d': './image/rain.png',
-        '11d': './image/storm.png',
-        '13d': './image/snow.png',
-        '50d': './image/mist.png',
+        '01n': './image/sun.png',
+        '02n': './image/cloudy.png',
+        '03n': './image/cloudy.png',
+        '04n': './image/cloudy.png',
+        '09n': './image/rain.png',
+        '10n': './image/rain.png',
+        '11n': './image/storm.png',
+        '13n': './image/snow.png',
+        '50n': './image/mist.png',
       }
       console.log(iconMap[weatherCode]);
       return iconMap[weatherCode] || './image/sun.png'
@@ -58,10 +57,10 @@ export default {
 
 <template>
   <div
-    class="relative overflow-hidden rounded-lg bg-cover bg-no-repeat p-12 text-center"
+    class=" overflow-hidden  bg-cover  text-center"
     style="background-image: url('https://aphoto.vn/wp-content/uploads/2016/07/cach-chup-hinh-dep-bang-dien-thoai.jpg'); height: 100vh">
     <div
-      class="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-fixed  "
+      class=" h-full w-full overflow-hidden  "
       style="background-color: rgba(0, 0, 0, 0.6)">
       <div class="flex h-full mt-[100px] justify-center">
         <div class="rounded-[20px] w-[500px] h-auto">
