@@ -1,6 +1,6 @@
 <template>
   <div
-    class=" relative overflow-hidden  bg-cover w-full h-screen  text-center object-fill"
+    class="  overflow-hidden  bg-cover w-full h-screen  text-center object-fill"
     style="background-image: url('https://cafebiz.cafebizcdn.vn/162123310254002176/2020/11/1/photo-1-16042165388811804174488.jpg') ">
     <div
       class=" h-full w-full text-gray-100 text-6xl font-medium overflow-hidden flex justify-center items-center "
