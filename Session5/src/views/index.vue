@@ -4,7 +4,6 @@ import ComponentSearch from "@/components/ComponentSearch.vue";
 import ComponentDropdown from "@/components/ComponentDropdown.vue";
 import ComponentButton from "@/components/Button/ComponentButton.vue"
 import ComponentButtonDelete from "@/components/Button/ComponentButtonDelete.vue"
-import ComponentRadio from "@/components/ComponentRadio.vue"
 import DialogAddTask from "@/components/ComponentDialogAddTask.vue"
 import ComponentConfirm from "@/components/ComponentConfirm.vue";
 import {taskData} from "@/data/data.js";
@@ -18,7 +17,6 @@ export default {
     ComponentDropdown,
     ComponentButton,
     ComponentButtonDelete,
-    ComponentRadio,
     DialogAddTask,
     ComponentConfirm
   },
@@ -201,7 +199,6 @@ export default {
 
       <div class="flex mb-8 justify-between px-5">
         <ComponentDropdown @sort="handleSort"/>
-        <ComponentRadio text-radio="hello"/>
         <ComponentSearch @search="handleSearch"/>
       </div>
 
