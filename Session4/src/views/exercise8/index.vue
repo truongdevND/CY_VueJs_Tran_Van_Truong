@@ -88,7 +88,7 @@ export default {
         Thêm mới
       </button>
     </div>
-    <ul class=" flex gap-[30px] ">
+    <ul class=" flex gap-[30px] flex-wrap  w-[70%] mx-auto  ">
       <li v-for="item in arrayNote" :key="item.id"
           class="w-[300px] h-[300px] p-[10px] bg-gray-200 rounded-[10px] flex flex-col gap-[20px] mb-[10px]">
         <template v-if="editingNote !== item.id">
