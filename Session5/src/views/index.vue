@@ -7,6 +7,7 @@ import ComponentButtonDelete from "@/components/Button/ComponentButtonDelete.vue
 import ComponentRadio from "@/components/ComponentRadio.vue"
 import DialogAddTask from "@/components/ComponentDialogAddTask.vue"
 import ComponentConfirm from "@/components/ComponentConfirm.vue";
+import {taskData} from "@/data/data.js";
 import { ref } from "vue";
 
 export default {
@@ -30,14 +31,15 @@ export default {
     const taskToEdit = ref(null);
     const searchQuery = ref("");
 
+
     const loadFromLocalStorage = () => {
+      localStorage.setItem('todos', JSON.stringify(taskData));
       const savedTodos = localStorage.getItem('todos');
       if (savedTodos) {
         todos.value = JSON.parse(savedTodos);
         filteredTodos.value = [...todos.value];
       }
     };
-
     loadFromLocalStorage();
 
     const saveToLocalStorage = () => {
